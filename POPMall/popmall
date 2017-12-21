@@ -100,6 +100,7 @@ for goodCell in goodCells:
         #将商品的ID存储起来
         goodsIDArray.append(goodsID)
     xpathulnum = xpathulnum + 1
+    
 print("goosIDArray:",goodsIDArray)
 #因为购物车按钮在页面上方，所以需要页面滚动到顶部
 js = "var q=document.documentElement.scrollTop=0"
