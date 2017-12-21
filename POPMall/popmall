@@ -100,12 +100,12 @@ for goodCell in goodCells:
         #将商品的ID存储起来
         goodsIDArray.append(goodsID)
     xpathulnum = xpathulnum + 1
-    
-print("goosIDArray:",goodsIDArray)
+
+#print("goosIDArray:",goodsIDArray)
 #因为购物车按钮在页面上方，所以需要页面滚动到顶部
-js = "var q=document.documentElement.scrollTop=0"
-browser.execute_script(js)
-time.sleep(2)
+#js = "var q=document.documentElement.scrollTop=0"
+#time.sleep(2)
+#browser.execute_script(js)
 # 进入购物车查看 不知道为啥不执行点击操作
 browser.find_element_by_class_name("my-cart-link").click()
 #随机勾选商品（正常、异常已售罄）,接下来做随机更换数量（超过库存，小于库存）
