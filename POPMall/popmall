@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+#用例1点击加盟入驻左边的登录按钮进入登录页面—进入所有商品页面-清空购物车-将全部商品页面的所有商品加入购物车-进入购物车页面随机选择部分商品，将前面的勾选框弄成不勾选状态—从购物车中下单，使用量子支付，对订单是否提交成功做判断-生成订单-在运营平台进行审核-切换到供应商平台进行发货—商城收货#
+#商城申请退货-运营人员审核-商城交货-供应商平台收货-运营人员进行退款
 import selenium
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -20,8 +23,6 @@ browser.get(popmall_path)
 browser.maximize_window()
 # 点击商城首页页面上右上方的登录按钮
 # browser.find_element_by_xpath(".//*[@id='headerLogin']/a").click()
-# 通过超链接点击商城首页页面右上方的登录按钮，同样也适用于会员中心，加盟入驻
-# browser.find_element_by_link_text("登录").click()
 # 点击商城首页右边的登录按钮
 browser.find_element_by_xpath(".//*[@id='userLR']/a[1]").click()
 # 在登录页面通过id找到用户名输入框，并输入用户名wydqxclzjf
@@ -53,7 +54,6 @@ if status:
     WebDriverWait(browser,5).until(lambda x:x.find_element_by_class_name("ui-button-text")).click()
     time.sleep(1)
     browser.back()
-
 #找到第一页的所有商品单元格，因为接下来的代码中要获取商品的名称、商品id、购物车按钮，所以以单元格的维度进行for循环
 #本来class="sowlist2 fix"，但是会报Compound class names not permitted这个错误，意思是复合类名不能做参数，所有只能取其中的一个，sowlist2或者fix
 goodCells = browser.find_elements_by_class_name("sowlist2")
@@ -62,8 +62,8 @@ print("加入购物车按钮共有 %d 个" % (len(goodCells)))
 windowheight = browser.get_window_size()['height']
 #xpathulnum计算元素的xpath路径，为了遍历商品
 xpathulnum = 1
-#定义商品ID的数组
-goodsIDArray = []
+#定义商品ID的数组，目前这个数组和goodsID用不上，先注销
+#goodsIDArray = []
 # 将此页的所有商品加入购物车中
 for goodCell in goodCells:
     #下面2句是获得单元格的高度，是为了下面的计算，如果元素快超出屏幕了就上滑页面
@@ -82,8 +82,8 @@ for goodCell in goodCells:
     goodnamexpath = ".//*[@id='goodsListContainer']/div[2]/ul[" + str(xpathulnum) + "]""/li/div[2]/div[1]/a/h3"
     #获取商品名称，获取商品名称是为了可以打印出哪些商品加入了购物车，哪些商品不能加入购物车报错了
     goodsname = browser.find_element_by_xpath(goodnamexpath).get_attribute("title")
-    #获取商品ID，因为商品的ID在购物车按钮元素处体现，这里获取的商品ID存到一个数组中，方便在购物车中找到这些元素进行购买
-    goodsID = shoppingcart.get_attribute("data-id")
+    #获取商品ID，因为商品的ID在购物车按钮元素处体现，这里获取的商品ID存到一个数组中，方便在购物车中找到这些元素进行购买，目前用不到这个，所以先注销
+    #goodsID = shoppingcart.get_attribute("data-id")
     #使用下面2中方法都可以进行元素的点击  execute_script在当前窗口为执行js脚本的意思    execute是期望的意思  script是脚本的意思
     #shoppingcart.click()
     browser.execute_script("arguments[0].click();",shoppingcart)
@@ -95,21 +95,17 @@ for goodCell in goodCells:
         #点击报错窗口上的确定按钮
         browser.switch_to.alert.accept()
     else:
-        print("【%s】加入购物车了,它的ID是【%s】" % (goodsname,goodsID))
+        print("【%s】加入购物车了" % (goodsname))
         time.sleep(1)
         #将商品的ID存储起来
-        goodsIDArray.append(goodsID)
+        #goodsIDArray.append(goodsID)
     xpathulnum = xpathulnum + 1
-
 #print("goosIDArray:",goodsIDArray)
-#因为购物车按钮在页面上方，所以需要页面滚动到顶部
-#js = "var q=document.documentElement.scrollTop=0"
-#time.sleep(2)
-#browser.execute_script(js)
-# 进入购物车查看 不知道为啥不执行点击操作
+#因为购物车按钮在页面上方，所以需要页面滚动到顶部，进入购物车查看
+js = "var q=document.documentElement.scrollTop=0"
+browser.execute_script(js)
+time.sleep(2)
 browser.find_element_by_class_name("my-cart-link").click()
-#随机勾选商品（正常、异常已售罄）,接下来做随机更换数量（超过库存，小于库存）
-time.sleep(3)
-cartgoods = browser.find_elements_by_css_selector('tr[name="goodsId"]')
-print("cartgoods 有%d个"%len(cartgoods))
+WebDriverWait(browser,5).until(lambda x:x.find_element_by_class_name("")).click()
+#系统中默认是全部勾选商品
 browser.quit()
